@@ -1,57 +1,55 @@
 Quiz Game Project
 
-Overview
+Overview:-
 
-This Django-based quiz game project allows users to participate in quizzes with multiple-choice questions. It includes authentication features, leaderboard functionality, and administrative controls for managing quiz content.
+  This Django-based quiz game project allows users to participate in quizzes with multiple-choice questions. It includes authentication features, leaderboard functionality, and administrative controls for managing quiz content.
 
-Features
+Features:-
 
-Site Access Features:
+  1.Site Access Features:
 
-Users must be logged in to access quizzes.
+    Users must be logged in to access quizzes.
 
-Signup requires username, first name, last name, email address, and password.
+    Signup requires username, first name, last name, email address, and password.
 
-Login requires username and password only.
+    Login requires username and password only.
 
-Forgot password feature with OTP verification.
+    Forgot password feature with OTP verification.
 
-Email verification for new accounts.
+    Email verification for new accounts.
 
-Quiz Features:
+  2.Quiz Features:
 
-All questions are multiple-choice.
+    All questions are multiple-choice.
 
-Each question is displayed only once per user.
+    Each question is displayed only once per user.
 
-Questions are randomly displayed to each user.
+    Questions are randomly displayed to each user.
 
-Accidental page refresh or navigation marks the current question as attempted.
+    Feedback message after each attempted question on correctness.
 
-Feedback message after each attempted question on correctness.
+  3.Leaderboard Features:
 
-Leaderboard Features:
+    Leaderboard ranks users based on scores.
 
-Leaderboard ranks users based on scores.
+    If scores tie, earlier signups rank higher.
 
-If scores tie, earlier signups rank higher.
+    Leaderboard accessible without login.
 
-Leaderboard accessible without login.
+  4.Administrative Features:
 
-Administrative Features:
+    Only admin can add and manage quiz questions.
 
-Only admin can add and manage quiz questions.
+    Questions can be added and modified until marked as published.
 
-Questions can be added and modified until marked as published.
+    Published questions are immutable.
 
-Published questions are immutable.
+    Admin can search questions by text and filter by publication status.
 
-Admin can search questions by text and filter by publication status.
+  5.Technologies Used
 
-Technologies Used
+    Frontend: HTML, CSS, JavaScript (AJAX for dynamic updates).
 
-Frontend: HTML, CSS, JavaScript (AJAX for dynamic updates).
+    Backend: Django framework.
 
-Backend: Django framework.
-
-Database: SQLite/PostgreSQL for data storage.
+    Database: PostgreSQL for data storage.
