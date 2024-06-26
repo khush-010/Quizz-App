@@ -1,0 +1,246 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}{{quiz}} Quiz{% endblock title %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+    <style>
+        .clock-container {
+            width: 50px;
+            height: 50px;
+            margin-left: 20px;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        #countdown-clock {
+            width: 100%;
+            height: 100%;
+            border: 3px solid #000; 
+            border-radius: 50%;
+            position: relative;
+            background: #f0f0f0; 
+        }
+        
+        /* #countdown-clock .hand {
+            position: absolute;
+            width: 2px;
+            height: 40%; 
+            background: red;
+            top: 10%; 
+            left: 50%;
+            transform-origin: bottom;
+            animation: countdown 15s linear forwards;
+        } */
+        
+        @keyframes countdown {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .time-display {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: bold;
+            color: red;
+        }
+        
+    </style>
+{% endblock css %}
+{% block content %}
+<input type="hidden" id="submit-url" value="{% url 'submitquiz' %}" >
+    
+    <div class="container mt-4">
+        
+        <h1>{{ quiz }} Quiz</h1><span>
+            <div id='clock' class="clock-container">
+                <div id="countdown-clock">
+                    <div class="hand"></div>
+                </div>
+                <div id="time-left" class="time-display">15</div>
+            </div>
+        </span>
+        <div id="quiz-container">
+            <h3 id="answer-status"></h3>
+            <div id="question-box">
+                <h3 id="question">Loading question...</h3>
+                
+                <form id="answer-form">
+                    <div id="options"></div>
+                    <div id="functions">
+                        
+                    </div>
+                </form>
+            </div>
+            <div id="answer-status"></div>
+        </div>
+    </div>
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+<input type="hidden" id="home" data-url="{% url 'home' %}" />
+
+<script >
+    $(document).ready(function(){
+        var questions = JSON.parse("{{ questions|escapejs }}");
+        var submitUrl = $('#submit-url').val();
+        var currentQuestionIndex = 0;
+        var correct= 0;
+        var currentCategory = '';
+        var timer;
+        var timeremaining = true;
+        var answerStatus = '';
+        function loadQuestion(){    
+            var currentQuestion = questions[currentQuestionIndex];
+            $('#question-number').text();
+            $('#question').text(currentQuestionIndex+1+ ' . ' + currentQuestion.question);
+            $('#options').empty();
+            $('#answer-form').attr('data-correct-answer',currentQuestion.answer);
+            
+            var optionsHTML = '';
+            optionsHTML += '<div class="form-check">';
+            optionsHTML += `<input class="form-check-input" type="radio" name="answer" id="optionA" value="A">`;
+            optionsHTML += `<label class="form-check-label" for="optionA">${currentQuestion.opt_a}</label>`;
+            optionsHTML += '</div>';
+    
+            optionsHTML += '<div class="form-check">';
+            optionsHTML += `<input class="form-check-input" type="radio" name="answer" id="optionB" value="B">`;
+            optionsHTML += `<label class="form-check-label" for="optionB">${currentQuestion.opt_b}</label>`;
+            optionsHTML += '</div>';
+    
+            optionsHTML += '<div class="form-check">';
+            optionsHTML += `<input class="form-check-input" type="radio" name="answer" id="optionC" value="C">`;
+            optionsHTML += `<label class="form-check-label" for="optionC">${currentQuestion.opt_c}</label>`;
+            optionsHTML += '</div>';
+    
+            optionsHTML += '<div class="form-check">';
+            optionsHTML += `<input class="form-check-input" type="radio" name="answer" id="optionD" value="D">`;
+            optionsHTML += `<label class="form-check-label" for="optionD">${currentQuestion.opt_d}</label>`;
+            optionsHTML += '</div>';
+    
+            $('#options').html(optionsHTML);
+            currentCategory = currentQuestion.category;
+            startTimer();
+            $("#functions").html('<button id="save-button" type="button" class="btn btn-primary mt-3">Next</button>')
+            $('#save-button').click(function(){
+                checkAnswer();
+        
+                
+        
+            })
+        }
+        function startTimer() {
+            var timeLeft = 15;
+            $('#time-left').text(timeLeft);
+            clearInterval(timer);
+    
+            // Reset the clock hand animation
+            var hand = document.querySelector('#countdown-clock .hand');
+            hand.style.animation = 'none';
+            hand.offsetHeight; // Trigger reflow
+            hand.style.animation = '';
+    
+            timer = setInterval(function() {
+                timeLeft--;
+                $('#time-left').text(timeLeft);
+                if (timeLeft === 0) {
+                    timeremaining = false;
+                    clearInterval(timer);
+                    markquestionIncorrect();
+                }
+            }, 1000);
+        }
+    
+        
+        loadQuestion();
+        
+        
+        function markquestionIncorrect(){
+            $('#answer-status').html('Time Up!! Question marked Incorrect.')
+            $('#save-button').click();
+        }
+
+        function submitQuiz(){
+            $('#question-box').html('<h3>All questions answered!Your score is ' + correct + '</h3>');
+                var clockElement = document.getElementById('clock');
+                if (clockElement) {
+                    clockElement.style.display = 'none';
+                }
+                let score = correct;
+                let category = currentCategory;
+                let csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+                $.ajax({
+                    url: submitUrl,
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrf_token
+                    },
+                    data: {
+                        score:score,
+                        category:category,
+                    },
+                    
+                    success: function(data){
+                        if (data.status == 1){
+                            $('#question-box').html('<h3>All questions answered!Your score is ' + correct + '</h3>' + "<h3>Take another quiz <button><a class='nav-link' href='playquiz '>Play Quiz</a></button</h3>");
+                
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log("Error:", errorThrown);
+                    }
+                })
+        }
+        
+        function checkAnswer(){
+                var selectedAnswer = $("input[name='answer']:checked").val();
+                var correctAnswer = $('#answer-form').attr('data-correct-answer');
+                if (!selectedAnswer && timeremaining) {
+                    console.log('no answer selected')
+                    $('#answer-status').html('Please select an answer.');
+                    return;
+                }
+
+                
+                if (selectedAnswer === correctAnswer) {
+                    $('#answer-status').html('Correct!!');
+                    correct++;    
+                }
+                else if (selectedAnswer && (selectedAnswer != correctAnswer)){
+                    $('#answer-status').html('InCorrect!!');
+                    
+                }
+                $("#functions").html('<button id="next-button" type="button" class="btn btn-primary mt-3">Next</button>')
+                var seconds = 1;
+                setInterval(function(){
+                    seconds--;
+                    if(seconds==0){
+                        $("#next-button").click();
+                    }
+                },1000)
+                clearInterval(timer);
+                $('#next-button').click(function() {
+                    
+                    currentQuestionIndex++;
+                    clearInterval(timer);
+                    $('#answer-status').empty()
+                    if (currentQuestionIndex < questions.length) {
+                        
+                        loadQuestion();
+                    } else {
+                        submitQuiz();
+                    }
+                });
+        }    
+    })
+    
+    
+</script>
+
+{% endblock content %}

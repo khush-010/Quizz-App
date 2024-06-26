@@ -1,0 +1,190 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load socialaccount %}
+{% block title %}Home{% endblock title %}
+{% block css %}
+
+<style>
+    .login-with-google-btn {
+        transition: background-color .3s, box-shadow .3s;
+          
+        padding: 12px 16px 12px 42px;
+        border: none;
+        border-radius: 3px;
+        box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: #757575;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        width: 70%;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+        background-color: rgb(245, 241, 241);
+        background-repeat: no-repeat;
+        background-position: 12px 16px;
+        
+        &:hover {
+          box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25);
+        }
+        
+        &:active {
+          background-color: rgb(47, 87, 205);
+        }
+        
+        &:focus {
+          outline: none;
+          box-shadow: 
+            0 -1px 0 rgba(0, 0, 0, .04),
+            0 2px 4px rgba(0, 0, 0, .25),
+            0 0 0 3px #c8dafc;
+        }
+        
+        &:disabled {
+          filter: grayscale(100%);
+          background-color: #ebebeb;
+          box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+          cursor: not-allowed;
+        }
+      }
+
+    .form-signin {
+        width: 100%;
+        height: 100%;
+        max-height: 550px;
+        max-width: 400px;
+        padding: 0px;
+        margin: 15px auto 0 auto;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .tb {
+        margin: 1.5rem;
+        position: relative;
+    }
+
+    .tb input {
+        width: 100%;
+        padding: 10px;
+        font-size: large;
+    }
+
+    .tb label {
+        font-size: large;
+        font-weight: 400;
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: all 0.2s;
+        pointer-events: none;
+    }
+
+    .tb input:focus + label,
+    .tb input:not(:placeholder-shown) + label {
+        top: -10px;
+        left: 10px;
+        font-size: small;
+        color: #007bff;
+    }
+
+    .tb input:not(:focus) + label {
+        color: black;
+    }
+
+    legend {
+        margin-left: 1rem;
+        font-weight: bold;
+        font-size: x-large;
+    }
+
+    .rb {
+        margin-left: 1rem;
+        font-weight: lighter;
+    }
+
+    .btn-custom {
+        display: block;
+        width: 20%;
+        margin: 0.5rem auto;
+    }
+
+    .signup-link {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .signup-link a {
+        text-decoration: none;
+    }
+
+    .forgot-password {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .forgot-password a {
+        text-decoration: none;
+        color: #007bff;
+    }
+</style>
+{% endblock css %}
+{% block content %}
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'home' %}" style="margin-left: 1rem;">Home</a>
+        
+
+        <div class="collapse navbar-collapse" id="navbarsExample02">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'leaderboard' %}">Leaderboard</a>
+            </li>
+        </ul>
+        {% comment %} <form class="form-inline my-2 my-md-2" style="margin-left: 75%;">
+            <input class="form-control" type="text" placeholder="Search">
+        </form> {% endcomment %}
+        </div>
+    </nav>
+
+
+
+    <body class="text-center">
+        <form class="form-signin" method="POST">
+            {% csrf_token %}
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <div class="tb">
+                {{form.user_name}}
+                <label for="id_user_name">User Name</label>
+            </div>
+            <div class="tb">
+                {{form.password}}
+                <label for="id_password">Password</label>
+            </div>
+          <button class="btn btn-info btn-custom"  type="submit">Sign in</button>
+          <p  class="signup-link">Not Registered?<a href="{% url 'signup' %}" >Sign Up</a></p>
+            <div class="forget-pass">
+                <a href="{% url 'forget-pass' %}">
+                    Forget Password
+                </a>
+            </div>
+          {% if messages %}
+          {% for message in messages %}
+          <p{% if message.tags %} class="alert alert-{{ message.tags }} mb-2"{% endif %}>{{ message|safe }}</p>
+          {% endfor %}
+          
+          {% endif %}
+          
+            <a style="text-decoration: none;" href="{% provider_login_url 'google' %}?next=/">
+                <button type="button" class="login-with-google-btn" >
+                    <h6>Login with Google</h6>
+                </button>
+                
+            </a>
+        
+        </form>
+        
+    </body>
+{% endblock content %}

@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'profile' %}" style="margin-left: 1rem;">Profile</a>
+    
+  
+    <div class="collapse navbar-collapse" id="navbarsExample02">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'playquiz' %}" >Play Quiz</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'leaderboard' %}">Leaderboard</a>
+        </li>
+        <li class="nav-item" style="margin-left: 98rem ;">
+            <a class="nav-link" href="{% url 'signout' %}">Log out</a>
+        </li>
+    </ul>
+    
+    </div>
+  </nav>

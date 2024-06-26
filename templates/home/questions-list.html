@@ -1,0 +1,283 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Add Questions{% endblock title %}
+{% block css %}
+<style>
+    .search-container {
+        margin-top:10px;
+        margin-bottom: 15px;
+        width: 60%;
+    }
+    
+    
+
+    #sort-form{
+        margin-top:20px;
+        margin-bottom: 15px;
+        margin-left: 15%;
+        width: 10%;
+    }
+
+    #searchInput {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .pagination a {
+        color: #007bff;
+        text-decoration: none;
+        padding: 8px 16px;
+        border: 1px solid #007bff;
+        margin: 0 4px;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .pagination .active {
+        background-color: #007bff;
+        color: white;
+        border: 1px solid #007bff;
+        padding: 8px 16px;
+        border-radius: 4px;
+    }
+</style>{% endblock css %}
+{% block content %}
+{% include "home/admin-nav.html" %}
+<div style="display: flex;">
+    <div class="search-container" >
+        <input type="text" id="searchInput" class="form-control" placeholder="Search questions...">
+    </div>
+    <form id="sort-form" method="POST" action="{% url 'questions-list' %}">
+        <label for=""><h5>Question Status:-</h5></label>
+        <select class="form-control" name="status" id="sort-status" onchange="this.form.submit()">
+            <option value="{{status}}" selected hidden>{{status}}</option>
+            <option value="All">All</option>
+            <option value="published">Published</option>
+            <option value="not_published">Not Published</option>
+        </select>
+        {% csrf_token %}
+    </form>
+</div>
+    
+
+
+<div class="table-responsive">
+    <table id="table1" class="table table-bordered searchable sortable">
+        <thead>
+            <tr>
+                <th scope="col">S. No.</th>
+                <th scope="col">Question</th>
+                <th scope="col">Options</th>
+                <th scope="col">Category</th>
+                <th scope="col">Answer</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td >
+                    <span class="question-text">{{ question.question }}</span>
+                    <textarea  class="form-control question-input" value="" style="display: none;">{{ question.question }}</textarea>
+                </td>
+                <td>
+                    <ol type="A" class="options">
+                        <li >{{ question.opt_a }}</li>
+                        <li>{{ question.opt_b }}</li>
+                        <li>{{ question.opt_c }}</li>
+                        <li>{{ question.opt_d }}</li>
+                    </ol>
+                    <input type="text" class="form-control opt-a-input" value="{{ question.opt_a }}" style="display: none;">
+                    <input type="text" class="form-control opt-b-input" value="{{ question.opt_b }}" style="display: none;">
+                    <input type="text" class="form-control opt-c-input" value="{{ question.opt_c }}" style="display: none;">
+                    <input type="text" class="form-control opt-d-input" value="{{ question.opt_d }}" style="display: none;">
+                
+                </td>
+                <td >
+                    <span class="category-text">{{ question.category }}</span>
+                    <select class="form-control category-select" style="display: none;">
+                        <option value="SPORTS" {% if question.category == 'SPORTS' %}selected{% endif %}>SPORTS</option>
+                        <option value="GEOGRAPHY" {% if question.category == 'GEOGRAPHY' %}selected{% endif %}>GEOGRAPHY</option>
+                        <option value="HISTORY" {% if question.category == 'HISTORY' %}selected{% endif %}>HISTORY</option>
+                        <option value="MOVIES" {% if question.category == 'MOVIES' %}selected{% endif %}>MOVIES</option>
+                        <option value="MUSIC" {% if question.category == 'MUSIC' %}selected{% endif %}>MUSIC</option>
+                        <option value="LITERATURE" {% if question.category == 'LITERATURE' %}selected{% endif %}>LITERATURE</option>
+                    </select>
+                </td>
+                <td>
+                    <span class="answer-text">{{ question.answer }}</span>
+                    <select class="form-control answer-select" style="display: none;">
+                        <option value="A" {% if question.answer == 'A' %}selected{% endif %}>A</option>
+                        <option value="B" {% if question.answer == 'B' %}selected{% endif %}>B</option>
+                        <option value="C" {% if question.answer == 'C' %}selected{% endif %}>C</option>
+                        <option value="D" {% if question.answer == 'D' %}selected{% endif %}>D</option>
+                    </select>
+                </td>
+                <td>
+                    {% if question.published %}
+                    <span class="text-success">Published</span>
+                    {% else %}
+                    <span class="text-danger">Not Published</span>
+                    {% endif %}<br><br>
+                    {% if not question.published %}
+                    <button class="btn btn-outline-primary btn-sm btn-publish" data-question-id="{{ question.id }}">
+                        Publish
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm btn-modify" data-question-id="{{ question.id }}">
+                        Modify
+                    </button>
+                    <button class="btn btn-primary btn-sm btn-save" data-question-id="{{ question.id }}" style="display: none;">
+                        Save
+                    </button>
+                    <button class="btn btn-secondary btn-sm btn-cancel mt-1" data-question-id="{{ question.id }}" style="display: none;">
+                        Cancel
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include "home/pagination.html" %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<script>
+    $(document).ready(function(){
+        $(".btn-modify").click(function() {
+            var questionRow = $(this).closest("tr");
+            questionRow.find(".question-text").hide();
+            questionRow.find(".question-input").show().focus();
+            questionRow.find(".options li").hide();
+            questionRow.find(".opt-a-input").show();
+            questionRow.find(".opt-b-input").show();
+            questionRow.find(".opt-c-input").show();
+            questionRow.find(".opt-d-input").show();
+            questionRow.find(".category-text").hide();
+            questionRow.find(".category-select").show();
+            questionRow.find(".answer-text").hide();
+            questionRow.find(".answer-select").show();
+            questionRow.find(".btn-modify").hide();
+            questionRow.find(".btn-publish").hide();
+            questionRow.find(".btn-save").show();
+            questionRow.find(".btn-cancel").show();
+        });
+
+
+        
+
+        $(".btn-save").click(function() {
+            var questionRow = $(this).closest("tr");
+            var questionId = $(this).data('question-id');
+            var question = questionRow.find(".question-input").val();
+            var optA = questionRow.find(".opt-a-input").val();
+            var optB = questionRow.find(".opt-b-input").val();
+            var optC = questionRow.find(".opt-c-input").val();
+            var optD = questionRow.find(".opt-d-input").val();
+            var category = questionRow.find(".category-select").val();
+            var answer = questionRow.find(".answer-select").val();
+            let csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            
+            // Perform validation if needed
+            if (!question || !optA || !optB || !optC || !optD || !answer || !category) {
+                alert("Field Should not be blank.")
+                return;
+            } 
+            $.ajax({
+                url : "{% url 'modify-question' %}",
+                method : "POST",
+                headers: {
+                    "X-CSRFToken": csrf_token
+                },
+                data : {
+                    questionId: questionId,
+                    question: question,
+                    opt_a: optA,
+                    opt_b: optB,
+                    opt_c: optC,
+                    opt_d: optD,
+                    category:category,
+                    answer: answer,
+                },
+                success: function(data){
+                    location.reload();
+                }
+            });
+        });
+
+        $(".btn-publish").click(function() {
+            var confirmation = confirm("This will Publish the question and no changes can be made further.")
+            var questionId = $(this).data('question-id');
+            let csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            if (confirmation){
+                $.ajax({
+                    url:"{% url 'publish' %}",
+                    method:"POST",
+                    headers: {
+                        "X-CSRFToken": csrf_token
+                    },
+                    data:{
+                        questionId:questionId,
+                    },
+                    success: function(data){
+                        console.log('data sent');
+                        if(data.status == 1){
+                            alert("Question is Published.")
+                            location.reload();
+                        }
+                    }
+                })
+            }else{
+                return;
+            }
+        })
+
+
+        $(".btn-cancel").click(function() {
+            var questionRow = $(this).closest("tr");
+            questionRow.find(".question-text").show();
+            questionRow.find(".question-input").hide();
+            questionRow.find(".options li").show();
+            questionRow.find(".opt-a-input").hide();
+            questionRow.find(".opt-b-input").hide();
+            questionRow.find(".opt-c-input").hide();
+            questionRow.find(".opt-d-input").hide();
+            questionRow.find(".category-text").show();
+            questionRow.find(".category-select").hide();
+            questionRow.find(".answer-text").show();
+            questionRow.find(".answer-select").hide();
+            questionRow.find(".btn-modify").show();
+            questionRow.find(".btn-publish").show();
+            questionRow.find(".btn-save").hide();
+            questionRow.find(".btn-cancel").hide();
+        });
+        
+        $('#searchInput').on('keyup', function() {
+            var searchText = $(this).val().toLowerCase();
+        
+            $('#table1 tr').each(function() {
+                var textToSearch = $(this).text().toLowerCase();
+                $(this).toggle(textToSearch.indexOf(searchText) > -1);
+            });
+        });
+        
+       
+
+        
+    })
+</script>
+{% endblock content %}

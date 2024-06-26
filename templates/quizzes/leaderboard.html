@@ -1,0 +1,69 @@
+{% extends "core/base.html" %}
+{% block title %}Leaderboard{% endblock title %}Rankings-{{category}}
+{% block css %}
+<style>
+    h2{
+        text-align:center;
+        margin: 5px;
+    }
+
+    .table2 {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .table2 th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .table2 th {
+        background-color: #f2f2f2;
+        color: #333;
+        font-weight: bold;
+    }
+    .normal-user {
+        background-color: #f9f9f9;
+    }
+    .table2 tr:hover {
+        background-color: #f1f1f1;
+    }
+    
+</style>
+{% endblock css %}
+{% block content %}
+{% if nav == 1 %}
+{% include "home/user-nav.html" %}
+{% else %}
+{% include "home/web-nav.html" %}
+{% endif %}
+<h2>LEADERBOARD</h2>
+
+<table class="table2"  bgcolor="gainsboro">
+    <tr>
+        <th scope="col">Rank</th>
+        <th scope="col">User Name</th>
+        <th scope="col">Score</th>
+    </tr>
+
+        {% for score in scores %}
+        {% if score.user_name.id == user_id %}
+        <tr class="current-user" bgcolor="yellow">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ score.user_name.first_name }} {{ score.user_name.last_name }}</td>
+            <td>{{ score.score }}</td>
+        </tr>
+        {% else %}
+        <tr class="normal-user">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ score.user_name.first_name }} {{ score.user_name.last_name }}</td>
+            <td>{{ score.score }}</td>
+        </tr>
+        {% endif %}
+            
+        {% endfor %}
+    
+    
+
+</table>
+{% endblock content %}

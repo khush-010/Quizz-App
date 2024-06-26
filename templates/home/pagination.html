@@ -1,0 +1,30 @@
+<div class="pagination">
+    {% if questions.has_previous %}
+        <a href="?page={{ questions.previous_page_number }}">« Previous</a>
+
+        {% if questions.number > 3 %}
+            <a href="?page=1">1</a>
+            {% if questions.number > 4 %}
+                <span>...</span>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    {% for num in questions.paginator.page_range %}
+        {% if questions.number == num %}
+            <a href="?page={{ num }}" class="active">{{ num }}</a>
+        {% elif num > questions.number|add:'-3' and num < questions.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if questions.has_next %}
+        {% if questions.number < questions.paginator.num_pages|add:'-3' %}
+            <span>...</span>
+            <a href="?page={{ questions.paginator.num_pages }}">{{ questions.paginator.num_pages }}</a>
+        {% elif questions.number < questions.paginator.num_pages|add:'-2' %}
+            <a href="?page={{ questions.paginator.num_pages }}">{{ questions.paginator.num_pages }}</a>
+        {% endif %}
+        <a href="?page={{ questions.next_page_number }}">Next »</a>
+    {% endif %}
+</div>

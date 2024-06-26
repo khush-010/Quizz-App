@@ -1,0 +1,7 @@
+<div id="pass" >
+    <label for="newPassword">New Password:</label>
+    <input type="password" id="newPassword">
+    <label for="confirmPassword">Confirm New Password:</label>
+    <input type="password" id="confirmPassword">
+    <button type="button" class="btn btn-primary btn-submit-password">Submit Password</button>
+</div>

@@ -1,0 +1,39 @@
+/* quiz.css */
+
+#quiz-container {
+    margin-top: 20px;
+}
+
+#question-box {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#question {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#options {
+    margin-top: 20px;
+}
+
+.form-check {
+    margin-bottom: 10px;
+}
+
+.form-check-input {
+    margin-right: 10px;
+    transform: scale(1.5); /* Adjust size of radio buttons if necessary */
+}
+
+.form-check-label {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+#next-button {
+    margin-top: 20px;
+}

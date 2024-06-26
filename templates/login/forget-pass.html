@@ -1,0 +1,116 @@
+{% extends "core/base.html" %}
+{% block title %}Forget Password{% endblock title %}
+
+{% block content %}
+{% load static %}
+<form method="post">
+    {% csrf_token %}
+    <input type="email" id="email" name="email" placeholder="Enter your email">
+    <button type="button" class="btn btn-primary btn-send-otp">Send OTP</button>
+</form>
+<div id="div1"></div>
+<div id="div2"></div>
+{% if messages %}
+    {% for message in messages %}
+    <p{% if message.tags %} class="alert alert-{{ message.tags }} mb-5"{% endif %}>{{ message|safe }}</p>
+    {% endfor %}
+    
+    {% endif %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        function getCsrfToken() {
+            return $('[name="csrfmiddlewaretoken"]').val();
+        }
+
+        $("body").on("click", ".btn-send-otp", function(){
+            let email = $("#email").val();
+            let csrf_token = getCsrfToken();
+            $.ajax({
+                url: "{% url 'forget-pass' %}",
+                method: "POST",
+                data: {
+                    user: email,
+                    csrfmiddlewaretoken: csrf_token
+                },
+                success: function(data) {
+                    if (data.status == 1) {
+                        console.log("OTP sent successfully.");
+                        $("#div1").load("{% static 'dashboard/text2.txt' %} #otp", function() {
+                            console.log("Loaded OTP input form.");
+                        });
+                    } 
+                    else {
+                        alert('Failed to send OTP. No such registered email.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error in sending OTP: ", status, error);
+                }
+            });
+        });
+
+        $("body").on("click", ".btn-submit-otp", function(){
+            let otp = $("#otpInput").val();
+            let email = $("#email").val();
+            let csrf_token = getCsrfToken();
+            $.ajax({
+                url: "{% url 'confirm-otp' %}",
+                method: "POST",
+                data: {
+                    otp: otp,
+                    user: email,
+                    csrfmiddlewaretoken: csrf_token
+                },
+                success: function(data) {
+                    if (data.status == 1) {
+                        console.log("OTP verified successfully.");
+                        $("#div1").fadeOut('slow', function(){
+                            $("#div2").load("{% static 'dashboard/text3.txt' %} #pass", function() {
+                                console.log("Loaded password input form.");
+                                
+                                $("body").on("click", ".btn-submit-password", function(){
+                                    let new_pass = $("#newPassword").val();
+                                    let con_pass = $("#confirmPassword").val();
+                                    let email = $("#email").val();
+                                    if(new_pass == con_pass){
+                                        $.ajax({
+                                            url: "{% url 'new-pass' %}",
+                                            method: "POST",
+                                            data: {
+                                                npass : new_pass,
+                                                cpass : con_pass,
+                                                user:email,
+                                                csrfmiddlewaretoken: csrf_token
+                                            },
+                                            success: function(data){
+                                                if(data.status == 1){
+                                                    alert('Password changed successfully.')
+                                                    $("#div2").html('<p>Password changed successfully. <a href="{% url 'login' %}">Login to your account</a></p>');
+                                                }
+
+                                                else{
+                                                    alert('Enter Strong Password.')
+                                                }
+                                            } 
+                                        });
+                                    }
+                                    else{
+                                        alert('New Password Not matching with confirm password field.')
+                                    }
+                                });
+                                
+                            });
+                        });
+                    } else {
+                        alert('Invalid OTP');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error in verifying OTP: ", status, error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock content %}

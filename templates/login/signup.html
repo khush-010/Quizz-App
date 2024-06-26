@@ -1,0 +1,127 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Registration{% endblock title %}
+{% block css %}
+<style>
+    
+    .form-signin {
+        width: 100%;
+        max-width: 400px;
+        padding: 0px;
+        margin: 15px auto 0 auto;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .tb {
+        margin: 1.5rem;
+        position: relative;
+    }
+
+    .tb input {
+        width: 100%;
+        padding: 10px;
+        font-size: large;
+    }
+
+    .tb label {
+        font-size: large;
+        font-weight:400;
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: all 0.2s;
+        pointer-events: none;
+    }
+
+    .tb input:focus + label,
+    .tb input:not(:placeholder-shown) + label {
+        top: -10px;
+        left: 10px;
+        font-size: small;
+        color: #007bff;
+    }
+
+    .tb input:not(:focus) + label {
+        color: black;
+    }
+
+    legend {
+        margin-left: 1rem;
+        font-weight: bold;
+        font-size: x-large;
+    }
+
+    .rb {
+        margin-left: 1rem;
+        font-weight: lighter;
+    }
+
+    .alert {
+        width: 100%;
+        margin: 0 auto 10px auto;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+</style>
+{% endblock css %}
+{% block content %}
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+        <p style="color: whitesmoke; font-weight: bold; font-size: xx-large; margin-left: 40%;">Sign Up Form</p>
+    </nav>
+    <div class="text-center">
+        <form action="" method="post"  class="form-signin" >
+                {% csrf_token %}
+                <div class="tb">
+                    {{form.user_name}}
+                    <label for="id_user_name">User Name</label>
+                </div>
+                <div class="tb">
+                    {{form.first_name}}
+                    <label for="id_first_name">First Name</label>
+                </div>
+                <div class="tb">
+                    {{form.last_name}}
+                    <label for="id_last_name">Last Name</label>
+                </div>
+                <div class="tb">
+                    {{form.email}}
+                    <label for="id_email">Email</label>
+                </div>
+                <div class="tb">
+                    {{form.password}}
+                    <label for="id_password">Password</label>
+                </div>
+                <div class="tb">
+                    {{form.confirm_password}}
+                    <label for="id_confirm_password">Confirm Password</label>
+                </div>
+                <input class="btn btn-info btn-custom" type="submit" value="Submit" style="margin: 2rem 10%;">
+                <p class="signup-link">Already Registered?<a href="{% url 'login' %}" style="text-decoration: none;">Login</a></p>
+                {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </form> 
+            
+                
+            
+    </div>      
+    
+ 
+{% endblock content %}
+
+

@@ -1,0 +1,119 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Add Questions{% endblock title %}
+{% block css %}
+<style>
+    .form-signin {
+        width: 100%;
+        max-width: 580px;
+        padding: 0px;
+        margin: 15px auto 0 auto;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .tb {
+        margin: 1.5rem;
+        position: relative;
+    }
+
+    .tb input, .tb select, .tb textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: large;
+    }
+    .tb label {
+        font-size: large;
+        font-weight: 400;
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: all 0.2s;
+        pointer-events: none;
+    }
+
+    .tb input:focus + label,
+    .tb input:not(:placeholder-shown) + label,
+    .tb select:focus + label,
+    .tb select:not([value=""]) + label,
+    .tb textarea:focus + label,
+    .tb textarea:not(:placeholder-shown) + label {
+        top: -10px;
+        left: 10px;
+        font-size: small;
+        color: #007bff;
+    }
+
+    .tb input:not(:focus) + label,
+    .tb select:not(:focus) + label,
+    .tb textarea:not(:focus) + label {
+        color: black;
+    }
+
+    legend {
+        margin-left: 1rem;
+        font-weight: bold;
+        font-size: x-large;
+    }
+
+    .rb {
+        margin-left: 1rem;
+        font-weight: lighter;
+    }
+
+    .btn-custom {
+        display: block;
+        width: 30%;
+        margin: 1rem 12.5rem;
+    }
+
+    .tb textarea {
+        height: 120px; 
+        resize: vertical; 
+    }
+</style>
+{% endblock css %}
+{% block content %}
+
+{% include "home/admin-nav.html" %}
+<form action="" method="post" class="form-signin">
+    {% csrf_token %} 
+    <div class="tb">
+        {{ form.question }}
+        <label for="id_question">Question</label>
+    </div>
+    <div class="tb">
+        {{ form.opt_a }}
+        <label for="id_opt_a">Option A</label>
+    </div>
+    <div class="tb">
+        {{ form.opt_b }}
+        <label for="id_opt_b">Option B</label>
+    </div>
+    <div class="tb">
+        {{ form.opt_c }}
+        <label for="id_opt_c">Option C</label>
+    </div>
+    <div class="tb">
+        {{ form.opt_d }}
+        <label for="id_opt_d">Option D</label>
+    </div>
+    <div class="tb">
+        {{ form.category }}
+        <label for="id_category">Category</label>
+    </div>
+    <div class="tb">
+        {{ form.answer }}
+        <label for="id_answer">Answer</label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-custom">Submit</button>
+</form>
+{% if messages %}
+    {% for message in messages %}
+    <p{% if message.tags %} class="alert alert-{{ message.tags }} mb-5"{% endif %}>{{ message|safe }}</p>
+    {% endfor %}
+{% endif %}
+
+{% endblock content %}

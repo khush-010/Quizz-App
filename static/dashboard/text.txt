@@ -1,0 +1,8 @@
+<td id="accept">
+    Accepted
+</td>
+
+<td id="reject">
+    Rejected
+</td>
+

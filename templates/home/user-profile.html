@@ -1,0 +1,120 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Profile{% endblock title %}
+{% block css %}
+<style>
+    /* Custom styles */
+    .profile-card {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+    .profile-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .profile-info {
+      margin-bottom: 20px;
+    }
+    .profile-info p {
+      margin-bottom: 5px;
+    }
+    .rank-section {
+      margin-top: 20px;
+    }
+    .rank-section h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .rank-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .rank-list li {
+      margin-bottom: 5px;
+    }
+
+    .alert-success {
+      color: #155724;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+    }
+    .alert-danger {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+    .alert-warning {
+      color: #856404;
+      background-color: #fff3cd;
+      border-color: #ffeeba;
+    }
+    .alert-info {
+      color: #0c5460;
+      background-color: #d1ecf1;
+      border-color: #bee5eb;
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  
+  </style>
+{% endblock css %}
+
+{% block content %}
+{% comment %} {% include "dashboard/nav2.html" %}  {% endcomment %}
+{% include "home/user-nav.html" %}
+<div>
+  {% if messages %}
+    {% for message in messages %}
+      <p{% if message.tags %} class="alert alert-{{ message.tags }} mb-2"{% endif %}>{{ message|safe }}</p>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<div class="container">
+    <div class="profile-card">
+      <img src="{% static 'images/user.jpg' %}" alt="Profile Picture" class="profile-img">
+      <div class="profile-name">{{ user.first_name }} {{ user.last_name }}</div>
+      <div class="profile-info">
+        <p>Email: {{ user.email }}</p>
+      </div>
+      <div class="rank-section">
+        <h3>Your Ranks</h3>
+        <ul class="rank-list">
+          <li>Geography Rank : {{ geography_rank }}</li>
+          <li>Sports Rank : {{ sports_rank }}</li>
+          <li>History Rank : {{ history_rank }}</li>
+          <li>Movies Rank : {{ movies_rank }}</li>
+          <li>Music Rank : {{ music_rank }}</li>
+          <li>Literature Rank : {{ literature_rank }}</li>
+          <li>Overall Rank: {{ overall_rank }}</li>
+        </ul>
+      </div>
+      <button class="btn btn-primary"  id="edit-profile-btn"><a style="color: aliceblue; text-decoration: none;" href="{% url 'change-pass' %}">Change Password</a></button>
+    </div>
+  </div>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    setTimeout(() => {
+      const messages = document.querySelectorAll('.alert');
+      messages.forEach(message => {
+        message.remove();
+      });
+    }, 3000); // Remove messages after 3 seconds
+  });
+</script>
+{% endblock content %}

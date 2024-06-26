@@ -1,0 +1,6 @@
+<div id="otp">
+    <label for="otpInput">Enter OTP:</label>
+    <input type="password" id="otpInput">
+    <button type="button" class="btn btn-primary btn-submit-otp">Submit OTP</button>
+</div>
+
